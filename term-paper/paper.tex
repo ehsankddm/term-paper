@@ -1,0 +1,231 @@
+\documentclass[12pt]{article}
+
+\usepackage{graphics}
+\usepackage{epsfig}
+\usepackage{times}
+\usepackage{amsmath}
+%\usepackage{natbib}
+%\usepackage[style=authoryear]{biblatex}
+% \addbibresource{mendely.bib} 
+% <http://psl.cs.columbia.edu/phdczar/proposal.html>:
+%
+% The standard departmental thesis proposal format is the following:
+%        30 pages
+%        12 point type
+%        1 inch margins all around = 6.5   inch column
+%        (Total:  30 * 6.5   = 195 page-inches)
+%
+% For letter-size paper: 8.5 in x 11 in
+% Latex Origin is 1''/1'', so measurements are relative to this.
+
+\topmargin      0.0in
+\headheight     0.0in
+\headsep        0.0in
+\oddsidemargin  0.0in
+\evensidemargin 0.0in
+\textheight     9.0in
+\textwidth      6.5in
+
+\title{{\bf An Introduction on Recent Advances in Unsupervised Relation Extraction} \\
+\it Term Paper for Recent Advances on Semantics \\ supervised by Prof.Dr.Pinkal}
+\author{ {\bf Ehsan Khoddammohammadi}  \\
+Faculty of Computational Linguistics \\
+Saarland University\\
+{\small ehsank@coli.uni-saarland.de}
+}
+\date{\today}
+
+\begin{document}
+\pagestyle{plain}
+\pagenumbering{roman}
+\maketitle
+
+\pagebreak
+\begin{abstract}
+
+The aim of this paper is to review recent and influential methods on
+Unsupervised Relation Extraction. In the first part, the definition and a general background
+for relation extraction task is provided which identifies important aspects and
+difficulties of the task. In the second part, five major previous works are
+briefly reviewed. An extra section will be dedicated to a weakly supervised method, distant supervision, which is 
+necessary due to its impact on recent advances in the task. And
+finally in the last part, the paper will be concluded by comparing the discussed methods.
+
+
+\end{abstract}
+
+\pagebreak
+\tableofcontents
+\pagebreak
+
+\cleardoublepage
+\pagenumbering{arabic}
+
+\section{Introduction}
+\label{ch:intro}
+
+This part provides an overall introduction of the unsupervised relation extraction task, including
+definition and various formulations of the task.
+
+\subsection{Definition}
+\label{ch:intro}
+
+Relation Extraction is the task of detecting and classifying semantic rela-
+tionship between named entities (NE). The goal of this task is to find a triple
+of binary relations and their arguments. For instance, we want to induce a
+relation like \emph{bornIn} with its arguments which could be for example like this:\emph{ (
+bornIn, Richard Stallman, New York )}. Applications of such task is numerous
+in natural language processing; Question/Answering, machine translation and
+text summarization are systems that benefit from relation extraction.
+
+In this task, we are trying to have a model to find paraphrases which means
+that we are interested to have all the similar semantically similar relations under
+one umbrella. So it is desired to have all different surface realizations of one
+relation like \emph{isGivenBirth, isBorn, isFrom} in a same set, namely \emph{bornIn}.
+
+Here, in this paper, we only limit ourselves to review unsupervised relation discovery methods. 
+One should mention that there are other approaches for this task based on the extent of resources that they use.
+ The different category of approaches is dependent on if they heavily use annotated corpora (supervised learning) or 
+ small amount of training data (weakly supervised learning). Here, in contrast, 
+ We just discuss methods that do not use annotated resources for inducing the relations and finding the arguments. 
+
+
+
+\section{Major Recent Works on Unsupervised Relation Extraction}
+\label{ch:related}
+
+From a classic method, DIRT, to very famous frameworks ,
+TextRunner or distant supervision, and more recent works e.g. PATTY,
+all are examples of several different family of approaches. These methods could
+be categorized from different perspectives (1) amount of annotated data they
+need (2) if they can only handle a predefined enumeration of entities and re-
+lations or are open to any number of relations (3) organization of semantic
+interpretation and (4) underlying family of methods they use.
+he content of your proposal. Each topic occupies one section, each
+with their own conclusion and future work.
+In this section we will review these major works. We will discuss their formulation of the task, their models
+ and the features they incorporate, the model constraints and finally we will take a look at how good a model is performing.
+
+
+\subsection{DIRT}
+\label{ch:unsupervised}
+
+\subsection{TextRunner}
+\label{ch:unsupervised}
+
+\subsection{USP}
+\label{ch:unsupervised}
+
+\subsection{PATTY}
+\label{ch:unsupervised}
+
+\subsection{Rel-LDA \& Type-LDA}
+\label{ch:unsupervised}
+
+
+
+
+
+\section{Weakly Supervised on Relation Extraction Task}
+\label{ch:related}
+
+\subsection{Distant Supervision}
+\label{ch:weakly supervised}
+
+The content of \cite{Huang2012} your proposal. Each topic occupies one section, each
+with their own conclusion and future work.
+
+\section{Conclusion}
+\label{ch:conclusion}
+
+\subsection{Analysis}
+\label{ch:conclusion}
+
+Based on what we have seen in recent works, we can now give a list of vital
+attributes that a state-of-the-art model for extracting relations from open text
+should be able to carry out. The author will use these facts to suggest a list of possible improvements
+in the next section. Modeling all of
+these factors in a joint model is the necessary step to push forward the previous
+works.
+
+\begin{description}
+  
+  \item[The number of relations and entities is an unknown parameter.] \hfill \\
+  The model can not be confined to a limited set of relations or entities. Being able to extract relations in
+  open domain text is the first and (most likely) a trivial attribute of the model. More non-trivial feature
+  of the model should be its ability to extract as many relations as there are in text. 
+  Giving this freedom
+  about the model complexity to have no assumption about the exact number of entities and relations
+  is suggested by the applicant to be beneficial 
+   and is also supported in the literature.
+   %\citep{Yates2007}\citep{Mintz2009} 
+
+  \item[Relations may not be expressed explicitly in text.] \hfill \\
+  Relation extraction task is definitely more than finding paraphrases. The model should be able to handle
+  long-distance relations among entities as well as hidden semantic indications of a relation.
+  
+  %\citep{PoonDomingos2009} 
+
+  \item[Relations and entities have their inner organization and types.] \hfill \\
+  It is shown by several recent works that relations of relations play a substantial role in identifying
+  relations. Relations and entities belong to a hierarchy of types and therefore the constraints they put on each other
+  should be learnt as well.
+  %\citep{Yao2011}\citep{Alfonesca2012}\citep{NakasholeWeikum2012}
+
+  \item[Using KB is necessary but not enough.] \hfill \\
+  There are more relations among entities than what is collected in 
+  Knowledge Bases e.g. Freebase. At the same time, it is statistically shown that a supervision
+  from such resources strongly contributes to convergance of any model to a better 
+  objective configurations.
+  %\citep{Mintz2009}\citep{Bordes2011}\citep{Yao2011}
+
+  \item[Relations and entities are sharing information within each other.] \hfill \\
+  Relations and entities should be learnt jointly since they share same explanatory factors (hidden variables)
+  . Meaning of a entity can be learnt from its relation to other entities and same argument holds among relations.
+  Basically, the model should be able to carry multi-task learning. 
+  %\citep{Yao2011}\citep{Bordes2011}
+    
+\end{description}
+
+
+\subsection{Summaru}
+\label{ch:conclusion}
+
+
+Provide an overview of what you have done and what need to be done.
+
+%\subsection{Plan for completion of the research}
+
+%Table \ref{tab:plan} shows my plan for completion of the research.
+
+%\begin{table}[hc]
+%\begin{small}
+%\begin{center}
+%\begin{tabular}{lll}
+%Timeline & Work & Progress\\
+%\hline
+%          & XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX & completed\\
+%Nov. xxxx & XXXXXXXXXXXXXXXXXXXXXXXXXXX & ongoing\\
+%Jan. xxxx & Thesis writting & \\
+%Feb. xxxx & Thesis defense & \\
+%\end{tabular}
+%\end{center}
+%\end{small}
+%\caption{Plan for completion of my research}
+%\label{tab:plan}
+%\end{table}
+
+
+
+\pagebreak
+
+\begin{footnotesize}
+\bibliographystyle{plain}
+%\bibliographystyle{agsm}
+\bibliography{mendely.bib}
+%\printbibliography
+\end{footnotesize}
+
+\end{document}
+
+
