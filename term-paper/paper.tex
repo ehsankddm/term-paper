@@ -51,7 +51,6 @@ briefly reviewed. The third chapter is dedicated to a weakly supervised method, 
 necessary due to its impact on recent advances in the task. And
 finally in the last chapter, the paper will be concluded by comparison of discussed methods and important lessons learned from each of them.
 
-
 \end{abstract}
 
 \pagebreak
@@ -184,7 +183,7 @@ In this model, features, $f$, are generated from a distribution , $\Phi_{rf}$. E
    	is a relation that is supposed to be semantically equivalent to the other members of this cluster.
    	\\
    	
-   	In the second model, \textbf{Rel1-LDA},The only difference is that  more features are used in the learning procedure.
+   	In the second model, \textbf{Rel-LDA1},The only difference is that  more features are used in the learning procedure.
    	 The idea is that using more features could be useful as tie-breakers and also discriminators between instances
    	  to make new clusters. With direct reference to the paper, the authors believe that more features 
    	  lead to better refinement of clusters. We will see later that this assumption holds in practice.
@@ -192,7 +191,8 @@ In this model, features, $f$, are generated from a distribution , $\Phi_{rf}$. E
    	   \begin{itemize}
    	     \item Trigger: Any word in a dependency path except than stop words. 
    	     \item Part of speech sequence: The sequence of pos tags of a dependency path. 
-   	     \item Named entity pair: The type of source and destination named entity. 
+   	     \item Named entity pair: The type of source and destination named entity.
+   	     \item Syntactic pair: The type of dependency edges connecting source and destination to the head.
    	   \end{itemize}   
    
  Among all the newly introduced features, NE pair is the most interesting one which leads to a 
@@ -217,11 +217,37 @@ In this model, features, $f$, are generated from a distribution , $\Phi_{rf}$. E
    for inducing relations. Relations of each cluster should have similar selectional preferences and
     accept same entity types. Type-LDA is proposed for this reason, it will induce entity types 
     and relation clusters jointly to benefit more from selectional preferences of relations.
-     
- 
-
+    
+    The generative model is modified in a way that features of arguments (source and destination)
+    will be generated from two new distributions, $T_1$ \& $T_2$ which are modeling entity types. The graphical model
+    is shown in fig ???. This model not only clusters relations but also clusters entities to entity clusters.
+    
+    For their experiments on all three models they have set the number of relation clusters to 100 and for Type-LDA they used 
+     50 entity clusters. Choosing other numbers of relation clusters in the range of 50 to 200 is shown to be not very significant.
+    
 \subsection {Evaluation}
 \label{ch:evaluation}
+
+Yao et al. have evaluated their models in different settings. Their comparison against Mintz et al.?? previous work
+ will be mentioned in the next chapter which is dedicated to distant supervision. They have used human judgments 
+ to measure their models precision. Humans are asked to label 50 instances in each relation cluster and in order to measure
+ the recall, induced relations are compared against Freebase. Table ?? shows the results.
+ 
+ ???
+ 
+ Like most of the other models, antonymy is not handled in their model and therefor for example they have
+ \emph{X was born in Y} and \emph{X die in Y} in one cluster.
+ 
+ Entity clusters also sometimes suffer from high-frequency or low-frequency words and for example, `New York`
+ , is in the same cluster as other publications like `New York Times`, `Vanity Fair` and \ldots
+ 
+ Yao et al. have shown that they have induced relations in different granularity from Freebase and reported some relations
+ which are not mentioned in Freebase but positively hold. For example, Freebase relation \emph{worksFor}
+  is subsumed with more relations each indicates a different role of employment relation. \emph{leaderOf}
+   and \emph{editorOf} are such examples. This will boost the idea of inducing heirarchical 
+   relations which will be discussed more in the last chapter.
+ 
+ 
 
 \chapter{Weakly Supervised on Relation Extraction Task}
 \label{ch:related}
