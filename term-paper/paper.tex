@@ -1,4 +1,4 @@
-\documentclass[12pt]{article}
+\documentclass[12pt]{report}
 
 \usepackage{graphics}
 \usepackage{epsfig}
@@ -35,7 +35,7 @@ Saarland University\\
 }
 \date{\today}
 
-\begin{document}
+\begin{report}
 \pagestyle{plain}
 \pagenumbering{roman}
 \maketitle
@@ -61,13 +61,13 @@ finally in the last part, the paper will be concluded by comparing the discussed
 \cleardoublepage
 \pagenumbering{arabic}
 
-\section{Introduction}
+\chapter{Introduction}
 \label{ch:intro}
 
 This part provides an overall introduction of the unsupervised relation extraction task, including
 definition and various formulations of the task.
 
-\subsection{Definition}
+\section{Definition}
 \label{ch:intro}
 
 Relation Extraction is the task of detecting and classifying semantic rela-
@@ -91,7 +91,7 @@ One should mention that there are other approaches for this task based on the ex
 
 
 
-\section{Major Recent Works on Unsupervised Relation Extraction}
+\chapter{Major Recent Works on Unsupervised Relation Extraction}
 \label{ch:related}
 
 From a classic method, DIRT, to very famous frameworks ,
@@ -107,38 +107,70 @@ In this section we will review these major works. We will discuss their formulat
  and the features they incorporate, the model constraints and finally we will take a look at how good a model is performing.
 
 
-\subsection{DIRT}
+\section{DIRT}
 \label{ch:unsupervised}
 
-\subsection{TextRunner}
+\section{TextRunner}
 \label{ch:unsupervised}
 
-\subsection{USP}
+\section{USP}
 \label{ch:unsupervised}
 
-\subsection{PATTY}
+\section{PATTY}
 \label{ch:unsupervised}
 
-\subsection{Rel-LDA \& Type-LDA}
+\section{Rel-LDA \& Type-LDA}
 \label{ch:unsupervised}
 
+In this section we will review the method proposed for relation discovery  by Yao et. al. 
+The method they  proposed is an unsupervised method using generative models which is based on 
+modification of well-known model, Latent Dirichlet Allocation. 
+They have invented three similar models which we will go through them in following. 
+We elaborate on input of the three models and then we describe their generative story 
+and at the end we will finish this part by discussing about  model evaluation.
+
+\subsection{Input format and preprocessing}
+\label{ch:input}
+Authors have chosen a subset of New York Times articles from year 2000 to 2007 which parts with
+abnormal style of writing like obituary content or hard structures to deal like lists are filtered out.
+They have done several pre-processing steps:
+\begin{enumerate}
+\item Tokenization
+\item Sentence split
+\item POS tagging (all last three steps with Stanford tools)
+\item Named entity tagging (Finkel2005)
+\item Dependency parsing (MaltParser)
+\end{enumerate}
+Among all dependency paths we are just interested in those which link two named entities.
+ So basically we are hopeful that realization of one relation is available somewhere in this 
+ path most likely as a verb which relates two mentioned named entities. We collect these kinds of 
+ paths and based on some conditions that we have already discussed in ??? DIRT we filter out non-important links.
+ 
+ As an example ???
+ Finally in this phase, 2.5 million dependency paths were collected 
+ which will serve as an input to the models that we describe in the next subsection.
 
 
+\subsection {Model Description}
+\label{ch:model}
 
 
-\section{Weakly Supervised on Relation Extraction Task}
+\subsection {Evaluation}
+\label{ch:evaluation}
+
+\chapter{Weakly Supervised on Relation Extraction Task}
 \label{ch:related}
 
-\subsection{Distant Supervision}
+\section{Distant Supervision}
 \label{ch:weakly supervised}
 
 The content of \cite{Huang2012} your proposal. Each topic occupies one section, each
 with their own conclusion and future work.
 
-\section{Conclusion}
+\chapter{Conclusion}
 \label{ch:conclusion}
 
-\subsection{Analysis}
+\section{Analysis}
 \label{ch:conclusion}
 
 Based on what we have seen in recent works, we can now give a list of vital
@@ -188,7 +220,7 @@ works.
 \end{description}
 
 
-\subsection{Summaru}
+\section{Summaru}
 \label{ch:conclusion}
 
 
