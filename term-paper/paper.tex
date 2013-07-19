@@ -26,7 +26,7 @@
 \textheight     9.0in
 \textwidth      6.5in
 
-\title{{\bf An Introduction on Recent Advances in Unsupervised Relation Extraction} \\
+\title{{\bf A Review on Recent Advances in Unsupervised Relation Extraction} \\
 \it Term Paper for Recent Advances on Semantics \\ supervised by Prof.Dr.Pinkal}
 \author{ {\bf Ehsan Khoddammohammadi}  \\
 Faculty of Computational Linguistics \\
@@ -35,7 +35,7 @@ Saarland University\\
 }
 \date{\today}
 
-\begin{report}
+\begin{document}
 \pagestyle{plain}
 \pagenumbering{roman}
 \maketitle
@@ -44,12 +44,12 @@ Saarland University\\
 \begin{abstract}
 
 The aim of this paper is to review recent and influential methods on
-Unsupervised Relation Extraction. In the first part, the definition and a general background
+Unsupervised Relation Extraction. In the first chapter, the definition and a general background
 for relation extraction task is provided which identifies important aspects and
-difficulties of the task. In the second part, five major previous works are
-briefly reviewed. An extra section will be dedicated to a weakly supervised method, distant supervision, which is 
+difficulties of the task. In the second chapter, five major previous works are
+briefly reviewed. The third chapter is dedicated to a weakly supervised method, distant supervision, which is 
 necessary due to its impact on recent advances in the task. And
-finally in the last part, the paper will be concluded by comparing the discussed methods.
+finally in the last chapter, the paper will be concluded by comparison of discussed methods and important lessons learned from each of them.
 
 
 \end{abstract}
@@ -131,20 +131,20 @@ and at the end we will finish this part by discussing about  model evaluation.
 
 \subsection{Input format and preprocessing}
 \label{ch:input}
-Authors have chosen a subset of New York Times articles from year 2000 to 2007 which parts with
-abnormal style of writing like obituary content or hard structures to deal like lists are filtered out.
+Authors have chosen a subset of New York Times articles from year 2000 to 2007 which some of its parts with
+abnormal style of writing like obituary content are filtered out.
 They have done several pre-processing steps:
 \begin{enumerate}
 \item Tokenization
 \item Sentence split
-\item POS tagging (all last three steps with Stanford tools)
-\item Named entity tagging (Finkel2005)
-\item Dependency parsing (MaltParser)
+\item POS tagging (?? all last three steps with Stanford tools)
+\item Named entity tagging ( ?? Finkel2005)
+\item Dependency parsing (??MaltParser)
 \end{enumerate}
-Among all dependency paths we are just interested in those which link two named entities.
- So basically we are hopeful that realization of one relation is available somewhere in this 
- path most likely as a verb which relates two mentioned named entities. We collect these kinds of 
- paths and based on some conditions that we have already discussed in ??? DIRT we filter out non-important links.
+Among all dependency paths they are just interested in those which link two named entities.
+ Authors assume that realization of one relation is available in this 
+ path most likely as a verb which relates two mentioned named entities. These types of 
+ paths are collected and based on some conditions that we have already discussed in (??? DIRT), non-important links are filtered out.
  
  As an example ???
  Finally in this phase, 2.5 million dependency paths were collected 
@@ -153,7 +153,72 @@ Among all dependency paths we are just interested in those which link two named 
 
 \subsection {Model Description}
 \label{ch:model}
+All the three models in this work are generative models. Generative models are jointly modeling hidden variables and observable variables and 
+are in contrast to discriminative models. For more information on generative models please see ?? and ??.\\
 
+
+\textbf{Rel-LDA} is the first model proposed in (?? Yao). 
+In this model, features, $f$, are generated from a distribution , $\Phi_{rf}$. Each type
+ of relation is represented with a binary indicator variable, $r$. Each document is a mixture of few relations
+  and relations are generated from a multinomial distribution $\Theta_{doc}$. $\Theta_{doc}$ is a distribution
+  of relations for a specific document and can be shown as $P(r|doc)$. By choosing a right prior distribution for $\Theta$
+   and $\Phi$ we can impose an assumption that any document contains a few number of relation types. 
+   Another advantage of having prior is that it helps to avoid overfitting. Dirichlet prior with small parameter $\alpha$ is 
+   chosen for this purpose in the paper. For more on the role of priors and specially Dirichlet prior
+    please read ?? and ??.
+    Rel-LDA is decribed with a graphical model in figure ???.
+    Shaded circles are showing the observable variables and other circles are hidden variables except 
+    the priors which are set by ourselves. The direction of arrow shows the dependency in this sense 
+    that destination node (variable) is dependent on source node.
+      
+    Features or observable variables in Rel-LDA are:
+    \begin{itemize}
+      \item The dependency path
+      \item Source of the path (the first named entity)
+      \item Destination of the path (the second named entity)
+    \end{itemize}
+   	
+   	An exact sampling method called \emph{variational inference} is used by authors to compute 
+   	the posterior distribution of the model, $P(r|f)$.
+   	After learning, we will have clusters of relation types which each instance of a specific cluster 
+   	is a relation that is supposed to be semantically equivalent to the other members of this cluster.
+   	\\
+   	
+   	In the second model, \textbf{Rel1-LDA},The only difference is that  more features are used in the learning procedure.
+   	 The idea is that using more features could be useful as tie-breakers and also discriminators between instances
+   	  to make new clusters. With direct reference to the paper, the authors believe that more features 
+   	  lead to better refinement of clusters. We will see later that this assumption holds in practice.
+   	   The new features that they have introduced in this new model are:
+   	   \begin{itemize}
+   	     \item Trigger: Any word in a dependency path except than stop words. 
+   	     \item Part of speech sequence: The sequence of pos tags of a dependency path. 
+   	     \item Named entity pair: The type of source and destination named entity. 
+   	   \end{itemize}   
+   
+ Among all the newly introduced features, NE pair is the most interesting one which leads to a 
+ significant observation that the third model will try to address that. Authors observed that 
+ Rel-LDA will put these three relations in one cluster because the second argument of all of them is location:
+ 
+ \begin{enumerate}
+   \item \emph{ X was born in Y}
+   \item \emph{ X lives in Y}
+   \item \emph{ X, a company in Y}
+ \end{enumerate}
+ 
+ While the first argument in the first two relations refers to a PER, the first argument of the 
+ third relation is an instance of ORG type. By using NER pairs as feature we can split this cluster 
+ to two clusters with respect to basic types of NE in relations arguments. 
+ This observation leads us to invest more on type identification of arguments to have more pure 
+ clusters and is the main focus of the third model, \textbf{Type-LDA}.
+ 
+ 
+ Selectional preferences of a relation are constraint over possible arguments for the relation.
+  Basically, any relation only accepts a few number of entity types and this could be an important constraint
+   for inducing relations. Relations of each cluster should have similar selectional preferences and
+    accept same entity types. Type-LDA is proposed for this reason, it will induce entity types 
+    and relation clusters jointly to benefit more from selectional preferences of relations.
+     
+ 
 
 \subsection {Evaluation}
 \label{ch:evaluation}
@@ -220,7 +285,7 @@ works.
 \end{description}
 
 
-\section{Summaru}
+\section{Summary}
 \label{ch:conclusion}
 
 
