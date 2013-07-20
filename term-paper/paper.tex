@@ -115,8 +115,47 @@ In this section we will review these major works. We will discuss their formulat
 \section{USP}
 \label{ch:unsupervised}
 
-\section{PATTY}
-\label{ch:unsupervised}
+In this section we will review the first unsupervised semantic parsing method which proposed by Poon and Domingos ???,
+we will first define what is semantic parsing and after describing the method in ??? we show its application for relation extraction.
+In the evaluation subsection we will compare this model to its related models and analyze its advantages and disadvantages.
+
+\subsection{Semantic Parsing}
+\label{ch:definition}
+
+Semantic parsing is mapping a sentence to its formal meaning represntation ???%cite{PoonDomingos2009}
+The aim is to represent a natural language text with first-order logic. One can derive a semantic parse of a sentence
+by starting from a lexicon of atomic formulas and combining each fragment to build a composition of 
+formulas combined with quantifiers and logical connectives. In ???%cite{PoonDomingos2009} 
+ the lexicon will be induced from a raw corpus. It is in contrast to traditional means of semantic parsing with manually
+  produced lexicons.
+  
+  The main challange in unsupervised semantic parsing is that for a single semantic representation there could be
+  several syntactic realizations or even harder, different surface representations. For example, all of the
+   sentences below has a same semantic representation:
+   \begin{itemize}
+     \item Microsoft buys Skype
+     \item Microsoft acquires the VoIP company Skype
+     \item Skype is acquired by Microsoft Corporation
+     \item The Redmond software giant buys Skype
+     \item Microsoft’s purchase of Skype,\ldots
+   \end{itemize}  
+  
+   A simple lexicon to represent all of the examples above is:
+  
+   $$ BUY(n_1)$$
+   $$ \lambda x_2.BUYER(n_1 , x_2) \; \;  \lambda x_3.BOUGHT(n_1 , x_3) $$
+   $$ MICROSOFT(n_2) \; \; SKYPE(n_3)$$
+   
+   Having a corpus of sentences in natural language, USP %???\cite{domingosPoon}
+    will induce such a lexicon and will also extract a formal representation for each sentence. In the next 
+    subsection we will review the necessary steps toward this goal.
+\subsection{Model Description}
+\label{ch:model}
+
+
+\subsection {Evaluation}
+\label{ch:evaluation}
+sdgdsg
 
 \section{Rel-LDA \& Type-LDA}
 \label{ch:unsupervised}
