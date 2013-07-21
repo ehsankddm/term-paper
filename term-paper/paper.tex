@@ -6,6 +6,7 @@
 \usepackage{amsmath}
 \usepackage{framed, color}
 \usepackage{fancybox}
+\usepackage{graphicx}
 \definecolor{shadecolor}{rgb}{0.8,0.8,0.8}
 
 %\usepackage{natbib}
@@ -50,9 +51,8 @@ Saarland University\\
 The aim of this paper is to review recent and influential methods on
 Unsupervised Relation Extraction. In the first chapter, the definition and a general background
 for relation extraction task is provided which identifies important aspects and
-difficulties of the task. In the second chapter, five major previous works are
-briefly reviewed. The third chapter is dedicated to a weakly supervised method, distant supervision, which is 
-necessary due to its impact on recent advances in the task. And
+difficulties of the task. In the second chapter, four major previous works are
+briefly reviewed. And
 finally in the last chapter, the paper will be concluded by comparison of discussed methods and important lessons learned from each of them.
 
 \end{abstract}
@@ -187,7 +187,7 @@ In the next two sections ISP and LEDIR methods will be covered as proposed impro
    
 
 \subsection{Inference Selectional Preferences}
-\label{ch:model} 
+\label{ch:improve} 
 
 Selectional preference of a predicate is the constraint that it puts over the class of words can be used as its arguments.
 For example: \emph{x drives y} has a selectional preference on the second argument for motorized 
@@ -197,11 +197,45 @@ has a preference for vehicles or animals which rider is positioned astride. %\ci
 In order to model this type of constraint on discovery of paraphrases, Pantel et al. have proposed that
 relations which are similar but are not sharing a same class of arguments should be filtered out. For each relation, 
 they compute a distribution of possible semantic classes for its arguments. For two equivalent relations, they will be kept
-if this distribution is similar for both.
+if this distribution is similar for both.Yao et al. ??? also incorporate selectional preferences to their model and which we
+will see in detailed in the last section.
+
+Two models are proposed to compute this distribution. The first one, the distribution is computed jointly for both of arguments
+and the second one two different distributions are computed for each argument. The computation is just a simple count.
+
+The question that naturally arises is that how one can obtain these semantic classes? The answer is that
+they are obtainable from lexical resources such as WordNet or they can be induced by clustering words.
+The authors have used both methods. As the first approach, they have used top level nodes in WordNet and all their successors together
+as semantic classes. They have also used CBC clustering algorithm ??? to induce semantic classes. 
+In ??? brown and ??? Lin WU a similar approach but with different clustering algorithms has been chosen 
+and the later is the current state-of-the-art method. 
+
+After computing selectional preferences for each relation, those relations which don't have similar selectional preference
+distribution will be considered as inequivalent. The plausibility of an inference rule which contains two relations is
+discussed in detailed in ??? %cite{LEDIR}.
+
+Inducing word clusters and using independent selectional preferences distributions has been shown to outperform other models
+and have the highest increase of accuracy compare to DIRT.     
+
+\subsection{Direction of Inference Rules}
+\label{ch:improve}
+So far all the similar relations are considered to be paraphrases nad they have bi-directional semantic equivallency relation.
+
+Since this assumption doesn't hold for all the inference rules that are discovered by DIRT, Pantel et al. pushed their model
+another step further to find the direction of implications among relations, in addition to just find equivalent relations.
+
+They have used the results from DIRT and ISP to find out which direction holds for an implication over two relations.
+having $relation_i \iff relation_j$ they want to examine if it holds or either of $relation_i \implies relation_j$
+or $relation_j \implies relation_i$ is the correct rule. 
+
+the key assumption in ??? is that the direction is most likely from a specific relation to a more general relation.
+By specific relation they mean a relation that has a narrow set of semantic classes and selectional preferences and 
+a general relation is a relation with broader semantic classes. Number of acceptable semantic classes for each relation is a 
+good measure for such purpose. If this number is greater for the antecedent then the direction is right otherwise it should be flipped.
+
+In the next section we will review a method which operates in web-scale and extract relations with bootstraping.
 
 
-
- 
 
 
 \section{TextRunner}
@@ -384,7 +418,14 @@ In this model, features, $f$, are generated from a distribution , $\Phi_{rf}$. E
    Another advantage of having prior is that it helps to avoid overfitting. Dirichlet prior with small parameter $\alpha$ is 
    chosen for this purpose in the paper. For more on the role of priors and specially Dirichlet prior
     please read ?? and ??.
-    Rel-LDA is decribed with a graphical model in figure ???.
+    Rel-LDA is decribed with a graphical model 
+     \begin{figure}[h!]
+  \caption{Rel-LDA}
+  \centering
+    \includegraphics[width=0.5\textwidth]{rel-lda.eps}
+    \label{fig:rel-lda}
+\end{figure} in Figure ~\ref{fig:rel-lda} .
+     
     Shaded circles are showing the observable variables and other circles are hidden variables except 
     the priors which are set by ourselves. The direction of arrow shows the dependency in this sense 
     that destination node (variable) is dependent on source node.
@@ -439,7 +480,15 @@ In this model, features, $f$, are generated from a distribution , $\Phi_{rf}$. E
     
     The generative model is modified in a way that features of arguments (source and destination)
     will be generated from two new distributions, $T_1$ \& $T_2$ which are modeling entity types. The graphical model
-    is shown in fig ???. This model not only clusters relations but also clusters entities to entity clusters.
+    is shown in
+     \begin{figure}[h!]
+  \caption{Type-LDA}
+  \centering
+    \includegraphics[width=0.5\textwidth]{type-lda.eps}
+    \label{fig:type-lda}
+\end{figure} 
+Figure ~\ref{fig:type-lda} .
+    This model not only clusters relations but also clusters entities to entity clusters.
     
     For their experiments on all three models they have set the number of relation clusters to 100 and for Type-LDA they used 
      50 entity clusters. Choosing other numbers of relation clusters in the range of 50 to 200 is shown to be not very significant.
@@ -447,8 +496,8 @@ In this model, features, $f$, are generated from a distribution , $\Phi_{rf}$. E
 \subsection {Evaluation}
 \label{ch:evaluation}
 
-Yao et al. have evaluated their models in different settings. Their comparison against Mintz et al.?? previous work
- will be mentioned in the next chapter which is dedicated to distant supervision. They have used human judgments 
+\iffalse Yao et al. have evaluated their models in different settings.  Their comparison against Mintz et al.?? previous work
+ will be mentioned in the next chapter which is dedicated to distant supervision. \fi They have used human judgments 
  to measure their models precision. Humans are asked to label 50 instances in each relation cluster and in order to measure
  the recall, induced relations are compared against Freebase. Table ?? shows the results.
  
@@ -467,15 +516,17 @@ Yao et al. have evaluated their models in different settings. Their comparison a
    relations which will be discussed more in the last chapter.
  
  
-
+\iffalse
 \chapter{Weakly Supervised on Relation Extraction Task}
 \label{ch:related}
 
 \section{Distant Supervision}
 \label{ch:weakly supervised}
 
+
 The content of \cite{Huang2012} your proposal. Each topic occupies one section, each
 with their own conclusion and future work.
+\fi
 
 \chapter{Conclusion}
 \label{ch:conclusion}
