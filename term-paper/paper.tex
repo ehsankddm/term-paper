@@ -151,6 +151,68 @@ formulas combined with quantifiers and logical connectives. In ???%cite{PoonDomi
     subsection we will review the necessary steps toward this goal.
 \subsection{Model Description}
 \label{ch:model}
+In this section we will first identify the three key ideas that the model is built upon them and then 
+we will describe the necessary steps toward unsupervised semanitc parsing.
+
+Three observations are made by the authors which is crucial to understand the model assumptions:
+
+\begin{enumerate}
+  \item Different syntactic variations of predicates and constants can be clustered together to express
+   a same meaning. This can be learned from a raw corpus, in contrast to supervised methods which use meaning annotation of text.
+   \item Not only fixed elements in a relation can be clustered together but also arbitrary forms with same sub-forms to co-occured forms 
+   can be put in a cluster. In this way the meaning compisiton will be learned through clustering of the forms.
+   \item Learning syntax and semantics jointly is a complex problem. Authors have shown that translating a syntactic analyses
+   to semantic parse has superior performance over joint learning of syntax and semantics. In this way, a model can be built on the shoulder
+   of state-of-the-art syntactic parsers.
+   
+\end{enumerate}
+
+Based on these assumptions, they propose a method to model joint probabibility of the dependency tree
+and its meaning representation. Markov Logic Networks (MLN) ??? is used to represent the meaning of a sentence.
+For each sentence we will have an undirected graphical model (Markov network) which each nodes corresponds to atoms
+and cliques correspond to first-order clauses. The best meaning representation is the one which 
+maximizes the probability of the observed dependency. %???cite{Titov}
+These are the major steps of the USP system:
+\begin{description}
+  \item[Dependency Parsing] \hfill \\
+  the authors believe that dependency parsing is a better starting point that phrase-structure parsing, since it expresses
+   the relation-argument structure at the lexical level. They have used Minipar ??? to make the results more comparable with previous
+   methods, e.g. DIRT.
+  \item[Converting Dependency Trees into Quasi-Logical Forms] \hfill \\
+  Extracting lambda forms and atoms (lexical entries) is done by a deterministic procedure. 
+  Arguments of a dependency path will be converted to atoms, their predicate consists of the lemma and their part-of-speech tags.
+  Each edge from the head to arguments will be a predicate labeled as type of the dependency path.
+  This predicate together with two lambda function for each argument form a QLF. In this QLF, only one constant can be presented.
+  
+  \item[Clustering Lambda-Forms] \hfill \\
+  It starts from atom levels and cluster them based on their relation, then it recursively clusters larger formula
+  based on their subformula lambda forms. The composition of meaning of any formula can be obtained by applying
+  \emph{lambda reduction} and substituting constants with lambda variables. At the end we will have a clustering
+  of lambda forms which each cluster contains a set of semantically equivalent lambda forms. this solves
+   the problem of having different syntactic realizations with a same meaning.
+  
+  \item[Creating a Markov Logic Network] \hfill \\
+  Each atom can be modeled as a node and each first-order clause can be modeled as a feature. This is still not a complete Markov Logical
+  Network since this model needs a weighting for features.Thus, the weight of feature is defined as a weight of
+  its corredpandant clause. A log-linear distibution $$ P(x) = \frac{1}{Z}\exp{\Sigma_i{(w_i n_i (x))}} $$is used to model the probability of each clique (configuration of nodes and features).
+  
+  
+  
+  \item[Learning the weights of MLN] \hfill \\
+  \item[Finding the Best Semantic Parse] \hfill \\
+  A semantic parse is a partition of atoms of a QLF, assignment of its head and argument form to a cluster. 
+  This can be seen as a structre prediction problem. Given the described MLN and its paramters, inference can
+   be done by finding a Maximum A Posterior solution. An exact solution needs a summing over all possible syntactic realizations and
+   possible dependency parses, therefor a greedy algorithm to search for a good solution is proposed 
+   by the authors.   
+\end{description}
+
+
+
+
+
+
+
 
 
 \subsection {Evaluation}
