@@ -4,6 +4,10 @@
 \usepackage{epsfig}
 \usepackage{times}
 \usepackage{amsmath}
+\usepackage{framed, color}
+\usepackage{fancybox}
+\definecolor{shadecolor}{rgb}{0.8,0.8,0.8}
+
 %\usepackage{natbib}
 %\usepackage[style=authoryear]{biblatex}
 % \addbibresource{mendely.bib} 
@@ -108,6 +112,97 @@ In this section we will review these major works. We will discuss their formulat
 
 \section{DIRT}
 \label{ch:unsupervised}
+
+Lin and Pantel in ??? proposed an unsupervised method for finding paraphrases from text which  
+proved to be very influential and their method, \textbf{DIRT}, has become a classic work. In addition
+ to this paper we will also review two major improvements to DIRT proposed by Pantel et al. ???.
+DIRT tries to cluster semantically equivalent relations based on the similarity of their arguments. Relations
+(or inference rules) that DIRT can discover are mostly limited to paraphrases which are a subset of possible types of inference rules.
+
+In this section, first, the key idea of DIRT will be elaborated more and then we will review the algorithm and analyze the observations.
+Based on these observations, two other methods, ISP and LEDIR ???, which try to address a subset of DIRT's problems, will be discussed.
+
+\subsection{Extended Distributional Hypothesis}
+\label{ch:assumption}
+
+Synonymy of words and other semantic relations in word level have been studied very well in literature.
+For example Pereira et al. in ??? %\cite{Distributional Clustering of English Words}
+cluster similar words which convey a similar meaning. The key assumption in this work and related ones is so called
+ \textbf{Distributional Hypothesis} ??? %\cite{Harris}
+ .It tells that words which usually occur in similar context have similar meaning. This idea can be generalized
+  to phrases or predicates-arguments. A set of relations or phrases that appear in a similar context
+  are semantically equivalent. Lin and Pantel have extended this idea with giving a slightly different notion
+   of context. The context that they define in their work is the dependency path between a predicate of
+    relation and its arguments. As the Extended Distributional Hypothesis states:
+    \begin{shaded}
+     If two paths tend to occur in similar contexts, the meaning of the path tend to be similar 
+    \end{shaded}
+    
+      
+    In this sense, the task of finding paraphrases or semantically equivalent relations
+     can be formulated as \emph{finding paths with similar meaning}. 
+     An algorithm to find such a similar path is a topic of the next aprt.
+
+\subsection{Model Description}
+\label{ch:model} 
+DIRT starts with dependency parsing of sentences and continues with pruning of these dependency trees.
+It amounts to several conditions on dependency path such as that only nouns will be kept as arguments. 
+Additionally, all the function words will be filtered to have the dependecy relations that only connect
+two content words. Dependency relations with less than a certain number of occurence will be removed to make the task feasible.
+After the pruning phase, a set of binary relations with a list of nouns associated to each of their slots is generated. 
+The similarity of relations can be expressed based on similarity of associated list of slot words. Lin and Pantel
+have used \emph{pointwise mutual information (pmi)} two measure similarity of slots. 
+It measures the independency of two random variables or the amount of
+information they containt for each other. The similarity function for relations  is a geometric average
+of similarity of correspondent slots.
+
+Instead of clustering of relations which seems to be a natural next phase,
+ they maintain a databases of triples (relation and its slots).For each relation queried
+  they measure the similarity of relations which share at least one common slot word and then report top-40 of them.
+  
+\subsection{Evaluation and Analysis}
+\label{ch:model} 
+  
+  Based on what Lin and Pantel have reported in ??? they extracted 231,000 unique paths from a newspaper corpus.
+  They have used a manually geenrated paraphrases to evaluate their method. For six questions from TREC-8 ???
+  they have generated top-40 paraphrases and then evaluate them manually to report percentage of correctly found paraphrases.
+  This approach has a very obvious flaw which is that number of returned paraphrases is fixed. Clustering has this 
+  advantage that each cluster of relations can have arbitrary number of paraphrases.
+  Average accuracy for these six questions is 50.3\% and no paraphrases have been found for one of the questions.
+  The recall can't be measured easily since many correctly found paraphrases by DIRT are not discovered by humans.
+  
+  Beside the problem of having fixed number of returned paraphrases, there are three other major 
+  problems after observing the results of DIRT which two of them will be addressed by Pantel et al. and
+  will be discussed in the next parts. These problems are:
+  
+  \begin{enumerate}
+    \item Antonymy of relations can not be captured with DIRT and antonym relations will be returned as similar relations. After more than
+    a decade, it is still an open problem
+    \item DIRT results are very noisy in a sense that it doesn't induce the type of arguments.
+    \item DIRT results or paraphreses are always considered as bi-directional. Relation \emph{A} implies relation \emph{B} and vice versa.
+    This assumption doesn't hold for many instances and needs to be regarded in the model.
+  \end{enumerate}
+  
+In the next two sections ISP and LEDIR methods will be covered as proposed improvements to DIRT to filter erroneous relations.
+   
+
+\subsection{Inference Selectional Preferences}
+\label{ch:model} 
+
+Selectional preference of a predicate is the constraint that it puts over the class of words can be used as its arguments.
+For example: \emph{x drives y} has a selectional preference on the second argument for motorized 
+vehicles with more than two wheels and \emph {x rides y}
+has a preference for vehicles or animals which rider is positioned astride. %\cite{ThesisMechura}
+
+In order to model this type of constraint on discovery of paraphrases, Pantel et al. have proposed that
+relations which are similar but are not sharing a same class of arguments should be filtered out. For each relation, 
+they compute a distribution of possible semantic classes for its arguments. For two equivalent relations, they will be kept
+if this distribution is similar for both.
+
+
+
+ 
+
 
 \section{TextRunner}
 \label{ch:unsupervised}
@@ -416,7 +511,7 @@ works.
   \item[Relations and entities have their inner organization and types.] \hfill \\
   It is shown by several recent works that relations of relations play a substantial role in identifying
   relations. Relations and entities belong to a hierarchy of types and therefore the constraints they put on each other
-  should be learnt as well.
+  should be learned as well.
   %\citep{Yao2011}\citep{Alfonesca2012}\citep{NakasholeWeikum2012}
 
   \item[Using KB is necessary but not enough.] \hfill \\
@@ -427,8 +522,8 @@ works.
   %\citep{Mintz2009}\citep{Bordes2011}\citep{Yao2011}
 
   \item[Relations and entities are sharing information within each other.] \hfill \\
-  Relations and entities should be learnt jointly since they share same explanatory factors (hidden variables)
-  . Meaning of a entity can be learnt from its relation to other entities and same argument holds among relations.
+  Relations and entities should be learned jointly since they share same explanatory factors (hidden variables)
+  . Meaning of a entity can be learned from its relation to other entities and same argument holds among relations.
   Basically, the model should be able to carry multi-task learning. 
   %\citep{Yao2011}\citep{Bordes2011}
     
