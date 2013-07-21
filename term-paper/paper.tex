@@ -194,11 +194,20 @@ These are the major steps of the USP system:
   \item[Creating a Markov Logic Network] \hfill \\
   Each atom can be modeled as a node and each first-order clause can be modeled as a feature. This is still not a complete Markov Logical
   Network since this model needs a weighting for features.Thus, the weight of feature is defined as a weight of
-  its corredpandant clause. A log-linear distibution $$ P(x) = \frac{1}{Z}\exp{\Sigma_i{(w_i n_i (x))}} $$is used to model the probability of each clique (configuration of nodes and features).
-  
-  
-  
+  its corredpandant clause. A log-linear distibution 
+  $$ P(x) = \frac{1}{Z}\exp{\Sigma_i{(w_i n_i (x))}} $$
+  is used to model the probability of each clique (configuration of nodes and features).
+  $Z$ is a normalization factor which its computation is infeasible. $w_i$ is the weight of $i$th formula.
+  $n_i$ is number of satisfied atoms and formulas that appeared in the sentence. 
+   
   \item[Learning the weights of MLN] \hfill \\
+  Given the dependency parse and QLF forms, weights can be learned from data such as the log-likelihood
+  of having QLFs given the dependency trees will be maximized. The form of likelihood is:
+  $$ L_{\theta}(QLF) = \log{\Sigma_L{P_\theta{(QLF, L)}}}$$ where $L$ is a semantic parse.
+  
+  Since the summation of all possible semantic parses is infeasible, a set of additional constraints on the form
+  of clauses and also a prior over weights are added to model to make the learning feasible. Their algorithm
+  merges any possible two clusters to form a bigger cluster or create a new cluster if either increases the likelihood.
   \item[Finding the Best Semantic Parse] \hfill \\
   A semantic parse is a partition of atoms of a QLF, assignment of its head and argument form to a cluster. 
   This can be seen as a structre prediction problem. Given the described MLN and its paramters, inference can
@@ -207,17 +216,31 @@ These are the major steps of the USP system:
    by the authors.   
 \end{description}
 
-
-
-
-
-
-
-
-
 \subsection {Evaluation}
 \label{ch:evaluation}
-sdgdsg
+Since USP is the first system for unsupervised semantic parsing, it is compared against other models in a Question/Answering task.
+GENIA is an Q/A annotated dataset in medical domain and USP has been shown to find the answers with 88\% precision
+which is about 10\% higher than TextRunner and more than 30\% better than DIRT. It is worthwhile to mention that
+GENIA is a rather small dataset.
+
+There are two major problems observed by the authors themselves and others for USP.
+\begin{itemize}
+ \item Same as the other models that we have already seen,
+ it doesn't address the separation of antonym relations
+ \item It is mentioned in ??? %\cite{Yao} \cite{Titov}
+ that USP suffers from using a large memory and therefore low ability to scale to bigger dataset. 
+ \end{itemize}
+ Two modifications for USP runtime is proposed in ???%\cite{Deep USP} \cite{Titov}.
+  In ???  %\cite{Titov}
+  it is proposed to use directed graphical models instead of undirected graphs(MLN) to increase the learning and inference speed.
+  The result is slighty worse than the original model but it performs faster than USP.
+  In ???%\cite{Deep USP} 
+  a new representation of the model is given in the framwork of deep learning which yields 
+  the same performance but with faster learning algorithm.
+  
+  In the next section we will see another model which shows improvement to DIRT, TextRunner and USP 
+  and is much more scalable than the former.
+     
 
 \section{Rel-LDA \& Type-LDA}
 \label{ch:unsupervised}
