@@ -305,7 +305,7 @@ TextRunner avoids using parsing for large-scale and inhomogeneous corpus like we
      
      TextRunner is evaluated against a manually tagged dataset of 500 sentences. While the precision is in 
       the accepted level, 86.6\%, recall is low (23.2\%). The recall has been improved by using a \emph{Conditional Random Field}
-       \cite{Banko2009} as classifier instead of Naive Bayes. Precision slightly is improved by using a CRF for about 2\%
+       \cite{Banko2009} as classifier instead of Naive Bayes. The model precision is slightly improved by using a CRF for about 2\%
         but we see a tremendous increase in recall which levels to 45.2\% . 
  
 TextRunner suffers from using very shallow features. Its ability to find relations is limited to explicitly mentioned
@@ -647,7 +647,7 @@ works.
 
   \item[Relations and entities are sharing information within each other.] \hfill \\
   Relations and entities should be learned jointly since they share same explanatory factors (hidden variables)
-  . Meaning of a entity can be learned from its relation to other entities and same argument holds among relations.
+  . Meaning of an entity can be learned from its relation to other entities and same argument holds among relations.
   Basically, the model should be able to carry out multi-task learning. \cite{Yao2011} 
     
 \end{description}
