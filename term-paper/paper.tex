@@ -74,7 +74,7 @@ definition and various formulations of the task.
 
 Nowadays searching through Internet is the first step we take if we want to get answer to our question.
 We convert our questions to sequences of keywords and search engines are trying 
-to lead us to webpages where might contain the answer to our questions, they return us a set of related
+to lead us to web pages where might contain the answer to our questions, they return us a set of related
 documents which are sorted by their popularity and similarity of their text to our query.
 In this way, users themselves are responsible to find the desired knowledge 
 from documents. The next generation search engines should go further than current 
@@ -86,11 +86,11 @@ same space of entities and relations in order to find the the desired informatio
 
 Relation Extraction is the task of detecting and classifying semantic relationship 
 between named entities (NE). The goal of this task is to find a triple
-of binary relations and their arguments. For instance, we want to induce a
+of binary relations and their arguments \cite{Androutsopoulos2009}. For instance, we want to induce a
 relation like \emph{bornIn} with its arguments which could be for example like this:\emph{ (
 bornIn, Beata Nyari, Budapest )}. Applications of such task is numerous
 in natural language processing; Question/Answering, machine translation and
-text summarization are systems that benefit from relation extraction.
+text summarization are systems that benefit from relation extraction \cite{Androutsopoulos2009}.
 
 In this task, we are trying to have a model to find paraphrases which means
 that we are interested to have all the similar semantically similar relations under
@@ -153,19 +153,19 @@ cluster similar words which convey a similar meaning. The key assumption in this
       
     In this sense, the task of finding paraphrases or semantically equivalent relations
      can be formulated as \emph{finding paths with similar meaning}. 
-     An algorithm to find such a similar path is a topic of the next aprt.
+     An algorithm to find such a similar path is a topic of the next part.
 
 \subsection{Model Description}
 \label{ch:dirt-model} 
 DIRT starts with dependency parsing of sentences and continues with pruning of these dependency trees.
 It amounts to several conditions on dependency path such as that only nouns will be kept as arguments. 
-Additionally, all the function words will be filtered to have the dependecy relations that only connect
-two content words. Dependency relations with less than a certain number of occurence will be removed to make the task feasible.
+Additionally, all the function words will be filtered to have the dependency relations that only connect
+two content words. Dependency relations with less than a certain number of occurrence will be removed to make the task feasible.
 After the pruning phase, a set of binary relations with a list of nouns associated to each of their slots is generated. 
 The similarity of relations can be expressed based on similarity of associated list of slot words. Lin and Pantel
 have used \emph{pointwise mutual information (pmi)} two measure similarity of slots. 
 It measures the independency of two random variables or the amount of
-information they containt for each other. The similarity function for relations  is a geometric average
+information they contain for each other. The similarity function for relations  is a geometric average
 of similarity of correspondent slots.
 
 Instead of clustering of relations which seems to be a natural next phase,
@@ -176,7 +176,7 @@ Instead of clustering of relations which seems to be a natural next phase,
 \label{ch:model} 
   
   Based on what Lin and Pantel have reported in \cite{Lin2001} they extracted 231,000 unique paths from a newspaper corpus.
-  They have used a manually geenrated paraphrases to evaluate their method. For six questions from TREC-8 
+  They have used a manually generated paraphrases to evaluate their method. For six questions from TREC-8 
   they have generated top-40 paraphrases and then evaluate them manually to report percentage of correctly found paraphrases.
   This approach has a very obvious flaw which is that number of returned paraphrases is fixed. Clustering has this 
   advantage that each cluster of relations can have arbitrary number of paraphrases.
@@ -191,7 +191,7 @@ Instead of clustering of relations which seems to be a natural next phase,
     \item Antonymy of relations can not be captured with DIRT and antonym relations will be returned as similar relations. After more than
     a decade, it is still an open problem
     \item DIRT results are very noisy in a sense that it doesn't induce the type of arguments.
-    \item DIRT results or paraphreses are always considered as bi-directional. Relation \emph{A} implies relation \emph{B} and vice versa.
+    \item DIRT results or paraphrases are always considered as bi-directional. Relation \emph{A} implies relation \emph{B} and vice versa.
     This assumption doesn't hold for many instances and needs to be regarded in the model.
   \end{enumerate}
   
@@ -223,7 +223,7 @@ In \cite{Brown1992} and \cite{Lin2009} a similar approach but with different clu
 and the later is the current state-of-the-art method. 
 
 After computing selectional preferences for each relation, those relations which don't have similar selectional preference
-distribution will be considered as inequivalent. The plausibility of an inference rule which contains two relations is
+distribution will be considered as nonequivalent. The plausibility of an inference rule which contains two relations is
 discussed in detailed in \cite{Bhagat2007} and \cite{Kotlerman2010} .
 
 Inducing word clusters and using independent selectional preferences distributions has been shown to outperform other models
@@ -231,7 +231,7 @@ and have the highest increase of accuracy compare to DIRT.
 
 \subsection{Direction of Inference Rules}
 \label{ch:improve}
-So far all the similar relations are considered to be paraphrases nad they have bi-directional semantic equivallency relation.
+So far all the similar relations are considered to be paraphrases and they have bi-directional semantic equivalency relation.
 
 Since this assumption doesn't hold for all the inference rules that are discovered by DIRT, Pantel et al. pushed their model
 another step further to find the direction of implications among relations, in addition to just find equivalent relations.
@@ -244,14 +244,74 @@ the key assumption in \cite{Bhagat2007} is that the direction is most likely fro
 By specific relation they mean a relation that has a narrow set of semantic classes and selectional preferences and 
 a general relation is a relation with broader semantic classes. Number of acceptable semantic classes for each relation is a 
 good measure for such purpose. If this number is greater for the antecedent then the direction is right otherwise it should be flipped.
+A similar approach has been used in \cite{Kotlerman2010} which additionally confirm the results of this work.
 
-In the next section we will review a method which operates in web-scale and extract relations with bootstraping.
+In the next section we will review a method which operates in web-scale and extract relations with bootstrapping.
 
 
 
 
 \section{TextRunner}
 \label{ch:unsupervised}
+
+TextRunner is the first system that addresses open domain relation extraction in web-scale \cite{Yates2007}. In this section
+ we will describe the architecture of TextRunner and then we will review two main elements of this system, \emph{Learner} and
+  \emph{Extractor}, in more details and shortly we will comment on the third element \emph{Assessor}.
+ 
+\subsection{TextRunner Architecture}
+\label{ch:arch}
+
+Original TextRunner paper proposed four elements for its architecture:
+\begin{itemize}
+  \item Learner
+  \item Extractor
+  \item Assessor
+  \item Query Processor
+\end{itemize}
+
+The last sub-system has no major role in relation extraction so we put our focus on the first three elements.
+
+\subsection{Model Description}
+\label{ch:model}
+
+TextRunner avoids using parsing for large-scale and inhomogeneous corpus like web. \emph{Learner} sub-system is responsible
+ for providing a substitution or an approximation for syntactic parsing which, called as extractor by the authors.
+  The approach that they follow in \cite{Yates2007}
+  is that they use a small corpus to train a  relation classifier and this classifer will be applied to a much bigger web corpus.
+   After parsing the small corpus, authors have used a set of predefined heuristics just based on POS tags and syntactic role 
+   of words to generate positive ad negative relation examples. The heuristics were designed as prototypes of syntactic behavior
+   of general relations and they are not dependent on any certain type of relation. 
+   For example:   $E_1 \;\; Verb \;\; E_2$ as template of \emph{X created Y} or 
+   $ E_1 \; \; NP \;  Prep \; \; E_2$ for \emph{X is birthplace of Y} are such heuristics.\\
+   
+   
+    
+    A Naive Bayes classifier is self-trained on this small dataset, it 
+   starts with small seed of relations for training then it labels more instances in the corpus. This classifier will be used as
+    \emph{Extractor}
+   in the next phase. This classifier is not relying on any lexical or relation-specific features, hence it can operate 
+   in open domain like web \cite{Banko2009}. In the extraction phase, a maximum-entropy classifer was used to find entities and then by 
+   using the extractor learned from the previous phase, they recognize explicit relations among named entities.
+   
+   These extracted relations and named entities contain many redundant or equivalent relations. The role of \emph{Assessor}
+    is to find equivalent relations. It starts with normalization of relations and entities and then based on string-similarity
+     and shared relational attributes it finds explicitly equivalent relations, it should be mentioned that 
+     this approach differs from DIRT which finds semantically equivalent relations.
+     
+      
+     
+\subsection{Evaluation}
+\label{ch:eval}
+     
+     TextRunner is evaluated against a manually tagged dataset of 500 sentences. While the precision is in 
+      the accepted level, 86.6\%, recall is low (23.2\%). The recall has been improved by using a \emph{Conditional Random Field}
+       \cite{Banko2009} as classifier instead of Naive Bayes. Precision slightly is improved by using a CRF for about 2\%
+        but we see a tremendous increase in recall which levels to 45.2\% . 
+ 
+TextRunner suffers from using very shallow features. Its ability to find relations is limited to explicitly mentioned
+ relations and it can only find them if they occur in a sentence. In the next part we will review a model 
+ which does not suffer from these disadvantages due to its deeper semantic analysis. 
+ 
 
 \section{USP}
 \label{ch:unsupervised}
@@ -263,14 +323,14 @@ In the evaluation subsection we will compare this model to its related models an
 \subsection{Semantic Parsing}
 \label{ch:definition}
 
-Semantic parsing is mapping a sentence to its formal meaning represntation \cite{Poon2009}
+Semantic parsing is mapping a sentence to its formal meaning representation \cite{Poon2009}
 The aim is to represent a natural language text with first-order logic. One can derive a semantic parse of a sentence
 by starting from a lexicon of atomic formulas and combining each fragment to build a composition of 
 formulas combined with quantifiers and logical connectives. In \cite{Poon2009} 
 the lexicon will be induced from a raw corpus. It is in contrast to traditional means of semantic parsing with manually
   produced lexicons.
   
-  The main challange in unsupervised semantic parsing is that for a single semantic representation there could be
+  The main challenge in unsupervised semantic parsing is that for a single semantic representation there could be
   several syntactic realizations or even harder, different surface representations. For example, all of the
    sentences below has a same semantic representation:
    \begin{itemize}
@@ -293,22 +353,22 @@ the lexicon will be induced from a raw corpus. It is in contrast to traditional 
 \subsection{Model Description}
 \label{ch:model}
 In this section we will first identify the three key ideas that the model is built upon them and then 
-we will describe the necessary steps toward unsupervised semanitc parsing.
+we will describe the necessary steps toward unsupervised semantic parsing.
 
 Three observations are made by the authors which is crucial to understand the model assumptions:
 
 \begin{enumerate}
   \item Different syntactic variations of predicates and constants can be clustered together to express
    a same meaning. This can be learned from a raw corpus, in contrast to supervised methods which use meaning annotation of text.
-   \item Not only fixed elements in a relation can be clustered together but also arbitrary forms with same sub-forms to co-occured forms 
-   can be put in a cluster. In this way the meaning compisiton will be learned through clustering of the forms.
-   \item Learning syntax and semantics jointly is a complex problem. Authors have shown that translating a syntactic analyses
+   \item Not only fixed elements in a relation can be clustered together but also arbitrary forms with same sub-forms to co-occurred forms 
+   can be put in a cluster. In this way the meaning composition will be learned through clustering of the forms.
+   \item Learning syntax and semantics jointly is a complex problem. Authors have shown that translating a syntactic analysis
    to semantic parse has superior performance over joint learning of syntax and semantics. In this way, a model can be built on the shoulder
    of state-of-the-art syntactic parsers.
    
 \end{enumerate}
 
-Based on these assumptions, they propose a method to model joint probabibility of the dependency tree
+Based on these assumptions, they propose a method to model joint probability of the dependency tree
 and its meaning representation. Markov Logic Networks (MLN) \cite{Richardson2006} is used to represent the meaning of a sentence.
 For each sentence we will have an undirected graphical model (Markov network) which each nodes corresponds to atoms
 and cliques correspond to first-order clauses. The best meaning representation is the one which 
@@ -335,7 +395,7 @@ These are the major steps of the USP system:
   \item[Creating a Markov Logic Network] \hfill \\
   Each atom can be modeled as a node and each first-order clause can be modeled as a feature. This is still not a complete Markov Logical
   Network since this model needs a weighting for features.Thus, the weight of feature is defined as a weight of
-  its corredpandant clause. A log-linear distibution 
+  its correspondent clause. A log-linear distribution 
   $$ P(x) = \frac{1}{Z}\exp{\Sigma_i{(w_i n_i (x))}} $$
   is used to model the probability of each clique (configuration of nodes and features).
   $Z$ is a normalization factor which its computation is infeasible. $w_i$ is the weight of $i$th formula.
@@ -351,7 +411,7 @@ These are the major steps of the USP system:
   merges any possible two clusters to form a bigger cluster or create a new cluster if either increases the likelihood.
   \item[Finding the Best Semantic Parse] \hfill \\
   A semantic parse is a partition of atoms of a QLF, assignment of its head and argument form to a cluster. 
-  This can be seen as a structre prediction problem. Given the described MLN and its paramters, inference can
+  This can be seen as a structure prediction problem. Given the described MLN and its parameters, inference can
    be done by finding a Maximum A Posterior solution. An exact solution needs a summing over all possible syntactic realizations and
    possible dependency parses, therefor a greedy algorithm to search for a good solution is proposed 
    by the authors.   
@@ -374,9 +434,9 @@ There are two major problems observed by the authors themselves and others for U
  Two modifications for USP runtime is proposed in \cite{Poon2013} and \cite{Titov2011}.
   In \cite{Titov2011}
    it is proposed to use directed graphical models instead of undirected graphs(MLN) to increase the learning and inference speed.
-  The result is slighty worse than the original model but it performs faster than USP.
+  The result is slightly worse than the original model but it performs faster than USP.
   In \cite{Poon2013} 
-  a new representation of the model is given in the framwork of deep learning which yields 
+  a new representation of the model is given in the framework of deep learning which yields 
   the same performance but with faster learning algorithm.
   
   In the next section we will see another model which shows improvement to DIRT, TextRunner and USP 
@@ -397,7 +457,7 @@ and at the end we will finish this part by discussing about  model evaluation.
 \label{ch:input}
 Authors have chosen a subset of New York Times articles from year 2000 to 2007 which some of its parts with
 abnormal style of writing like obituary content are filtered out.
-They have done several pre-processing steps:
+They have done several preprocessing steps:
 \begin{enumerate}
 \item Tokenization
 \item Sentence split
@@ -429,7 +489,7 @@ In this model, features, $f$, are generated from a distribution , $\Phi_{rf}$. E
    Another advantage of having prior is that it helps to avoid overfitting. Dirichlet prior with small parameter $\alpha$ is 
    chosen for this purpose in the paper. For more on the role of priors and specially Dirichlet prior
     please read \cite{Teh2007} and \cite{Gershman2012} .
-    Rel-LDA is decribed with a graphical model 
+    Rel-LDA is described with a graphical model 
      \begin{figure}[h!]
   \caption{Rel-LDA}
   \centering
@@ -461,7 +521,7 @@ In this model, features, $f$, are generated from a distribution , $\Phi_{rf}$. E
    	   The new features that they have introduced in this new model are:
    	   \begin{itemize}
    	     \item Trigger: Any word in a dependency path except than stop words. 
-   	     \item Part of speech sequence: The sequence of pos tags of a dependency path. 
+   	     \item Part of speech sequence: The sequence of POS tags of a dependency path. 
    	     \item Named entity pair: The type of source and destination named entity.
    	     \item Syntactic pair: The type of dependency edges connecting source and destination to the head.
    	   \end{itemize}   
@@ -512,7 +572,10 @@ Figure ~\ref{fig:type-lda} .
 \iffalse Yao et al. have evaluated their models in different settings.  Their comparison against Mintz et al.?? previous work
  will be mentioned in the next chapter which is dedicated to distant supervision. \fi They have used human judgments 
  to measure their models precision. Humans are asked to label 50 instances in each relation cluster and in order to measure
- the recall, induced relations are compared against Freebase. 
+ the recall, induced relations are compared against Freebase. Rel-LDA1 and Type-LDA which are using selectional preferences features
+  are performing better than Rel-LDA. Rel-LDA1 is shown to have the best precision among other models. 
+  Rel-LDA and Type-LDA have been also compared against
+  USP and have been shown to have superior performance both in scalability and F-measure. 
  
  Like most of the other models, antonymy is not handled in their model and therefor for example they have
  \emph{X was born in Y} and \emph{X die in Y} in one cluster.
@@ -523,7 +586,7 @@ Figure ~\ref{fig:type-lda} .
  Yao et al. have shown that they have induced relations in different granularity from Freebase and reported some relations
  which are not mentioned in Freebase but positively hold. For example, Freebase relation \emph{worksFor}
   is subsumed with more relations each indicates a different role of employment relation. \emph{leaderOf}
-   and \emph{editorOf} are such examples. This will boost the idea of inducing heirarchical 
+   and \emph{editorOf} are such examples. This will boost the idea of inducing hierarchical 
    relations which will be discussed more in the last chapter. A similar approach which tries to induce
     hierarchical structures is \cite{Alfonseca2012} .
  
@@ -579,13 +642,13 @@ works.
   \item[Using KB is necessary but not enough.] \hfill \\
   There are more relations among entities than what is collected in 
   Knowledge Bases e.g. Freebase. At the same time, it is statistically shown that a supervision
-  from such resources strongly contributes to convergance of any model to a better 
+  from such resources strongly contributes to convergence of any model to a better 
   objective configurations.\cite{Yao2011} \cite{Mintz2009}
 
   \item[Relations and entities are sharing information within each other.] \hfill \\
   Relations and entities should be learned jointly since they share same explanatory factors (hidden variables)
   . Meaning of a entity can be learned from its relation to other entities and same argument holds among relations.
-  Basically, the model should be able to carry multi-task learning. \cite{Yao2011} 
+  Basically, the model should be able to carry out multi-task learning. \cite{Yao2011} 
     
 \end{description}
 
@@ -593,7 +656,7 @@ works.
 \section{Summary}
 \label{ch:conclusion}
 
-In this paper, we reviewd four influential works on \textbf{Unsupervised Relation Extraction}:
+In this paper, we reviewed four influential works on \textbf{Unsupervised Relation Extraction}:
 \begin{enumerate}
   \item DIRT
   \item TextRunner
