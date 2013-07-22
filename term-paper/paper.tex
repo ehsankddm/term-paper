@@ -50,10 +50,10 @@ Saarland University\\
 
 The aim of this paper is to review recent and influential methods on
 Unsupervised Relation Extraction. In the first chapter, the definition and a general background
-for relation extraction task is provided which identifies important aspects and
-difficulties of the task. In the second chapter, four major previous works are
+for relation extraction task is provided. In the second chapter, four major previous works are
 briefly reviewed. And
-finally in the last chapter, the paper will be concluded by comparison of discussed methods and important lessons learned from each of them.
+finally in the last chapter, the paper will be concluded by identifying important aspects and
+difficulties of the task and important lessons learned from each of the discussed relation extraction systems.
 
 \end{abstract}
 
@@ -67,17 +67,28 @@ finally in the last chapter, the paper will be concluded by comparison of discus
 \chapter{Introduction}
 \label{ch:intro}
 
+\iffalse
 This part provides an overall introduction of the unsupervised relation extraction task, including
 definition and various formulations of the task.
+\fi
 
-\section{Definition}
-\label{ch:intro}
+Nowadays searching through Internet is the first step we take if we want to get answer to our question.
+We convert our questions to sequences of keywords and search engines are trying 
+to lead us to webpages where might contain the answer to our questions, they return us a set of related
+documents which are sorted by their popularity and similarity of their text to our query.
+In this way, users themselves are responsible to find the desired knowledge 
+from documents. The next generation search engines should go further than current 
+approaches in understanding the meaning of a query and the underlying semantics of documents on 
+the web. The next natural improvement is to return a piece of information which directly approaches to 
+answer the user question. For this reason, the elements of a query, concepts or entities and 
+their relations should be identified and documents ( which might have the answer) should be mapped to the 
+same space of entities and relations in order to find the the desired information in the question.
 
-Relation Extraction is the task of detecting and classifying semantic rela-
-tionship between named entities (NE). The goal of this task is to find a triple
+Relation Extraction is the task of detecting and classifying semantic relationship 
+between named entities (NE). The goal of this task is to find a triple
 of binary relations and their arguments. For instance, we want to induce a
 relation like \emph{bornIn} with its arguments which could be for example like this:\emph{ (
-bornIn, Richard Stallman, New York )}. Applications of such task is numerous
+bornIn, Beata Nyari, Budapest )}. Applications of such task is numerous
 in natural language processing; Question/Answering, machine translation and
 text summarization are systems that benefit from relation extraction.
 
@@ -97,39 +108,40 @@ One should mention that there are other approaches for this task based on the ex
 \chapter{Major Recent Works on Unsupervised Relation Extraction}
 \label{ch:related}
 
-From a classic method, DIRT, to very famous frameworks ,
-TextRunner or distant supervision, and more recent works e.g. PATTY,
+From a classic method, DIRT \cite{Lin2001}, to very famous frameworks ,
+TextRunner\cite{Bankoa} or distant supervision\cite{Mintz2009}, and more recent works e.g. PATTY\cite{Nakashole2012a},
 all are examples of several different family of approaches. These methods could
 be categorized from different perspectives (1) amount of annotated data they
 need (2) if they can only handle a predefined enumeration of entities and re-
 lations or are open to any number of relations (3) organization of semantic
 interpretation and (4) underlying family of methods they use.
-he content of your proposal. Each topic occupies one section, each
-with their own conclusion and future work.
-In this section we will review these major works. We will discuss their formulation of the task, their models
+In this section we will review four major works on unsupervised relation discovery.
+ We will discuss their formulation of the task, their models
  and the features they incorporate, the model constraints and finally we will take a look at how good a model is performing.
 
 
 \section{DIRT}
 \label{ch:unsupervised}
 
-Lin and Pantel in ??? proposed an unsupervised method for finding paraphrases from text which  
-proved to be very influential and their method, \textbf{DIRT}, has become a classic work. In addition
- to this paper we will also review two major improvements to DIRT proposed by Pantel et al. ???.
+Lin and Pantel in \cite{Lin2001} proposed an unsupervised method for finding paraphrases from text which  
+proved to be very influential and their method, \textbf{DIRT}, has become a classic work in literature.
+ In addition
+ to this paper we will also review two major improvements to DIRT proposed in \cite{Bhagat2007} and \cite{Pantel2007}.
 DIRT tries to cluster semantically equivalent relations based on the similarity of their arguments. Relations
 (or inference rules) that DIRT can discover are mostly limited to paraphrases which are a subset of possible types of inference rules.
 
 In this section, first, the key idea of DIRT will be elaborated more and then we will review the algorithm and analyze the observations.
-Based on these observations, two other methods, ISP and LEDIR ???, which try to address a subset of DIRT's problems, will be discussed.
+Based on these observations, two other methods, ISP \cite{Pantel2007} and LEDIR \cite{Bhagat2007}, 
+which try to address a subset of DIRT's problems, will be discussed.
 
 \subsection{Extended Distributional Hypothesis}
 \label{ch:assumption}
 
 Synonymy of words and other semantic relations in word level have been studied very well in literature.
-For example Pereira et al. in ??? %\cite{Distributional Clustering of English Words}
+For example Pereira et al. in \cite{Pereira1993} 
 cluster similar words which convey a similar meaning. The key assumption in this work and related ones is so called
- \textbf{Distributional Hypothesis} ??? %\cite{Harris}
- .It tells that words which usually occur in similar context have similar meaning. This idea can be generalized
+ \textbf{Distributional Hypothesis} \cite{Harris1981}
+ . It tells that words which usually occur in similar context have similar meaning. This idea can be generalized
   to phrases or predicates-arguments. A set of relations or phrases that appear in a similar context
   are semantically equivalent. Lin and Pantel have extended this idea with giving a slightly different notion
    of context. The context that they define in their work is the dependency path between a predicate of
@@ -163,8 +175,8 @@ Instead of clustering of relations which seems to be a natural next phase,
 \subsection{Evaluation and Analysis}
 \label{ch:model} 
   
-  Based on what Lin and Pantel have reported in ??? they extracted 231,000 unique paths from a newspaper corpus.
-  They have used a manually geenrated paraphrases to evaluate their method. For six questions from TREC-8 ???
+  Based on what Lin and Pantel have reported in \cite{Lin2001} they extracted 231,000 unique paths from a newspaper corpus.
+  They have used a manually geenrated paraphrases to evaluate their method. For six questions from TREC-8 
   they have generated top-40 paraphrases and then evaluate them manually to report percentage of correctly found paraphrases.
   This approach has a very obvious flaw which is that number of returned paraphrases is fixed. Clustering has this 
   advantage that each cluster of relations can have arbitrary number of paraphrases.
@@ -192,12 +204,12 @@ In the next two sections ISP and LEDIR methods will be covered as proposed impro
 Selectional preference of a predicate is the constraint that it puts over the class of words can be used as its arguments.
 For example: \emph{x drives y} has a selectional preference on the second argument for motorized 
 vehicles with more than two wheels and \emph {x rides y}
-has a preference for vehicles or animals which rider is positioned astride. %\cite{ThesisMechura}
+has a preference for vehicles or animals which rider is positioned astride \cite{Mechura2008} .
 
-In order to model this type of constraint on discovery of paraphrases, Pantel et al. have proposed that
+In order to model this type of constraint on discovery of paraphrases, Pantel et al. \cite{Pantel2007} have proposed that
 relations which are similar but are not sharing a same class of arguments should be filtered out. For each relation, 
 they compute a distribution of possible semantic classes for its arguments. For two equivalent relations, they will be kept
-if this distribution is similar for both.Yao et al. ??? also incorporate selectional preferences to their model and which we
+if this distribution is similar for both.Yao et al. \cite{Yao2011} also incorporate selectional preferences to their model and which we
 will see in detailed in the last section.
 
 Two models are proposed to compute this distribution. The first one, the distribution is computed jointly for both of arguments
@@ -206,13 +218,13 @@ and the second one two different distributions are computed for each argument. T
 The question that naturally arises is that how one can obtain these semantic classes? The answer is that
 they are obtainable from lexical resources such as WordNet or they can be induced by clustering words.
 The authors have used both methods. As the first approach, they have used top level nodes in WordNet and all their successors together
-as semantic classes. They have also used CBC clustering algorithm ??? to induce semantic classes. 
-In ??? brown and ??? Lin WU a similar approach but with different clustering algorithms has been chosen 
+as semantic classes. They have also used CBC clustering algorithm \cite{Pantel2002} to induce semantic classes. 
+In \cite{Brown1992} and \cite{Lin2009} a similar approach but with different clustering algorithms has been chosen 
 and the later is the current state-of-the-art method. 
 
 After computing selectional preferences for each relation, those relations which don't have similar selectional preference
 distribution will be considered as inequivalent. The plausibility of an inference rule which contains two relations is
-discussed in detailed in ??? %cite{LEDIR}.
+discussed in detailed in \cite{Bhagat2007} and \cite{Kotlerman2010} .
 
 Inducing word clusters and using independent selectional preferences distributions has been shown to outperform other models
 and have the highest increase of accuracy compare to DIRT.     
@@ -228,7 +240,7 @@ They have used the results from DIRT and ISP to find out which direction holds f
 having $relation_i \iff relation_j$ they want to examine if it holds or either of $relation_i \implies relation_j$
 or $relation_j \implies relation_i$ is the correct rule. 
 
-the key assumption in ??? is that the direction is most likely from a specific relation to a more general relation.
+the key assumption in \cite{Bhagat2007} is that the direction is most likely from a specific relation to a more general relation.
 By specific relation they mean a relation that has a narrow set of semantic classes and selectional preferences and 
 a general relation is a relation with broader semantic classes. Number of acceptable semantic classes for each relation is a 
 good measure for such purpose. If this number is greater for the antecedent then the direction is right otherwise it should be flipped.
@@ -244,18 +256,18 @@ In the next section we will review a method which operates in web-scale and extr
 \section{USP}
 \label{ch:unsupervised}
 
-In this section we will review the first unsupervised semantic parsing method which proposed by Poon and Domingos ???,
-we will first define what is semantic parsing and after describing the method in ??? we show its application for relation extraction.
+In this section we will review the first unsupervised semantic parsing method which proposed by Poon and Domingos \cite{Poon2009},
+we will first define what is semantic parsing and after describing the method in \cite{Poon2009} we show its application for relation extraction.
 In the evaluation subsection we will compare this model to its related models and analyze its advantages and disadvantages.
 
 \subsection{Semantic Parsing}
 \label{ch:definition}
 
-Semantic parsing is mapping a sentence to its formal meaning represntation ???%cite{PoonDomingos2009}
+Semantic parsing is mapping a sentence to its formal meaning represntation \cite{Poon2009}
 The aim is to represent a natural language text with first-order logic. One can derive a semantic parse of a sentence
 by starting from a lexicon of atomic formulas and combining each fragment to build a composition of 
-formulas combined with quantifiers and logical connectives. In ???%cite{PoonDomingos2009} 
- the lexicon will be induced from a raw corpus. It is in contrast to traditional means of semantic parsing with manually
+formulas combined with quantifiers and logical connectives. In \cite{Poon2009} 
+the lexicon will be induced from a raw corpus. It is in contrast to traditional means of semantic parsing with manually
   produced lexicons.
   
   The main challange in unsupervised semantic parsing is that for a single semantic representation there could be
@@ -275,7 +287,7 @@ formulas combined with quantifiers and logical connectives. In ???%cite{PoonDomi
    $$ \lambda x_2.BUYER(n_1 , x_2) \; \;  \lambda x_3.BOUGHT(n_1 , x_3) $$
    $$ MICROSOFT(n_2) \; \; SKYPE(n_3)$$
    
-   Having a corpus of sentences in natural language, USP %???\cite{domingosPoon}
+   Having a corpus of sentences in natural language, USP \cite{Poon2009}
     will induce such a lexicon and will also extract a formal representation for each sentence. In the next 
     subsection we will review the necessary steps toward this goal.
 \subsection{Model Description}
