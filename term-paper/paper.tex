@@ -156,7 +156,7 @@ cluster similar words which convey a similar meaning. The key assumption in this
      An algorithm to find such a similar path is a topic of the next aprt.
 
 \subsection{Model Description}
-\label{ch:model} 
+\label{ch:dirt-model} 
 DIRT starts with dependency parsing of sentences and continues with pruning of these dependency trees.
 It amounts to several conditions on dependency path such as that only nouns will be kept as arguments. 
 Additionally, all the function words will be filtered to have the dependecy relations that only connect
@@ -199,7 +199,7 @@ In the next two sections ISP and LEDIR methods will be covered as proposed impro
    
 
 \subsection{Inference Selectional Preferences}
-\label{ch:improve} 
+\label{ch:sel-pref} 
 
 Selectional preference of a predicate is the constraint that it puts over the class of words can be used as its arguments.
 For example: \emph{x drives y} has a selectional preference on the second argument for motorized 
@@ -309,15 +309,15 @@ Three observations are made by the authors which is crucial to understand the mo
 \end{enumerate}
 
 Based on these assumptions, they propose a method to model joint probabibility of the dependency tree
-and its meaning representation. Markov Logic Networks (MLN) ??? is used to represent the meaning of a sentence.
+and its meaning representation. Markov Logic Networks (MLN) \cite{Richardson2006} is used to represent the meaning of a sentence.
 For each sentence we will have an undirected graphical model (Markov network) which each nodes corresponds to atoms
 and cliques correspond to first-order clauses. The best meaning representation is the one which 
-maximizes the probability of the observed dependency. %???cite{Titov}
+maximizes the probability of the observed dependency \cite{Titov2011}.
 These are the major steps of the USP system:
 \begin{description}
   \item[Dependency Parsing] \hfill \\
   the authors believe that dependency parsing is a better starting point that phrase-structure parsing, since it expresses
-   the relation-argument structure at the lexical level. They have used Minipar ??? to make the results more comparable with previous
+   the relation-argument structure at the lexical level. They have used Minipar \cite{Lin2002} to make the results more comparable with previous
    methods, e.g. DIRT.
   \item[Converting Dependency Trees into Quasi-Logical Forms] \hfill \\
   Extracting lambda forms and atoms (lexical entries) is done by a deterministic procedure. 
@@ -368,14 +368,14 @@ There are two major problems observed by the authors themselves and others for U
 \begin{itemize}
  \item Same as the other models that we have already seen,
  it doesn't address the separation of antonym relations
- \item It is mentioned in ??? %\cite{Yao} \cite{Titov}
- that USP suffers from using a large memory and therefore low ability to scale to bigger dataset. 
+ \item It is mentioned in \cite{Yao2011} and \cite{Titov2011}
+  that USP suffers from using a large memory and therefore low ability to scale to bigger dataset. 
  \end{itemize}
- Two modifications for USP runtime is proposed in ???%\cite{Deep USP} \cite{Titov}.
-  In ???  %\cite{Titov}
-  it is proposed to use directed graphical models instead of undirected graphs(MLN) to increase the learning and inference speed.
+ Two modifications for USP runtime is proposed in \cite{Poon2013} and \cite{Titov2011}.
+  In \cite{Titov2011}
+   it is proposed to use directed graphical models instead of undirected graphs(MLN) to increase the learning and inference speed.
   The result is slighty worse than the original model but it performs faster than USP.
-  In ???%\cite{Deep USP} 
+  In \cite{Poon2013} 
   a new representation of the model is given in the framwork of deep learning which yields 
   the same performance but with faster learning algorithm.
   
@@ -386,7 +386,7 @@ There are two major problems observed by the authors themselves and others for U
 \section{Rel-LDA \& Type-LDA}
 \label{ch:unsupervised}
 
-In this section we will review the method proposed for relation discovery  by Yao et. al. 
+In this section we will review the method proposed for relation discovery  by Yao et. al. \cite{Riedel2013}  
 The method they  proposed is an unsupervised method using generative models which is based on 
 modification of well-known model, Latent Dirichlet Allocation. 
 They have invented three similar models which we will go through them in following. 
@@ -401,16 +401,15 @@ They have done several pre-processing steps:
 \begin{enumerate}
 \item Tokenization
 \item Sentence split
-\item POS tagging (?? all last three steps with Stanford tools)
-\item Named entity tagging ( ?? Finkel2005)
-\item Dependency parsing (??MaltParser)
+\item POS tagging %(?? all last three steps with Stanford tools)
+\item Named entity tagging % ( ?? Finkel2005)
+\item Dependency parsing %(??MaltParser)
 \end{enumerate}
 Among all dependency paths they are just interested in those which link two named entities.
  Authors assume that realization of one relation is available in this 
  path most likely as a verb which relates two mentioned named entities. These types of 
- paths are collected and based on some conditions that we have already discussed in (??? DIRT), non-important links are filtered out.
- 
- As an example ???
+ paths are collected and based on some conditions that we have already discussed in Section ~\ref{ch:dirt-model} ,
+  non-important links are filtered out.
  Finally in this phase, 2.5 million dependency paths were collected 
  which will serve as an input to the models that we describe in the next subsection.
 
@@ -418,10 +417,10 @@ Among all dependency paths they are just interested in those which link two name
 \subsection {Model Description}
 \label{ch:model}
 All the three models in this work are generative models. Generative models are jointly modeling hidden variables and observable variables and 
-are in contrast to discriminative models. For more information on generative models please see ?? and ??.\\
+are in contrast to discriminative models. For more information on generative models please see \cite{Murphy2012}.\\
 
 
-\textbf{Rel-LDA} is the first model proposed in (?? Yao). 
+\textbf{Rel-LDA} is the first model proposed in \cite{Riedel2013}. 
 In this model, features, $f$, are generated from a distribution , $\Phi_{rf}$. Each type
  of relation is represented with a binary indicator variable, $r$. Each document is a mixture of few relations
   and relations are generated from a multinomial distribution $\Theta_{doc}$. $\Theta_{doc}$ is a distribution
@@ -429,7 +428,7 @@ In this model, features, $f$, are generated from a distribution , $\Phi_{rf}$. E
    and $\Phi$ we can impose an assumption that any document contains a few number of relation types. 
    Another advantage of having prior is that it helps to avoid overfitting. Dirichlet prior with small parameter $\alpha$ is 
    chosen for this purpose in the paper. For more on the role of priors and specially Dirichlet prior
-    please read ?? and ??.
+    please read \cite{Teh2007} and \cite{Gershman2012} .
     Rel-LDA is decribed with a graphical model 
      \begin{figure}[h!]
   \caption{Rel-LDA}
@@ -488,7 +487,9 @@ In this model, features, $f$, are generated from a distribution , $\Phi_{rf}$. E
   Basically, any relation only accepts a few number of entity types and this could be an important constraint
    for inducing relations. Relations of each cluster should have similar selectional preferences and
     accept same entity types. Type-LDA is proposed for this reason, it will induce entity types 
-    and relation clusters jointly to benefit more from selectional preferences of relations.
+    and relation clusters jointly to benefit more from selectional preferences of relations. 
+    As we have already mentioned in Section ~\ref{ch:sel-pref},
+     this idea have been used in \cite{Pantel2007} .
     
     The generative model is modified in a way that features of arguments (source and destination)
     will be generated from two new distributions, $T_1$ \& $T_2$ which are modeling entity types. The graphical model
@@ -511,9 +512,7 @@ Figure ~\ref{fig:type-lda} .
 \iffalse Yao et al. have evaluated their models in different settings.  Their comparison against Mintz et al.?? previous work
  will be mentioned in the next chapter which is dedicated to distant supervision. \fi They have used human judgments 
  to measure their models precision. Humans are asked to label 50 instances in each relation cluster and in order to measure
- the recall, induced relations are compared against Freebase. Table ?? shows the results.
- 
- ???
+ the recall, induced relations are compared against Freebase. 
  
  Like most of the other models, antonymy is not handled in their model and therefor for example they have
  \emph{X was born in Y} and \emph{X die in Y} in one cluster.
@@ -525,7 +524,8 @@ Figure ~\ref{fig:type-lda} .
  which are not mentioned in Freebase but positively hold. For example, Freebase relation \emph{worksFor}
   is subsumed with more relations each indicates a different role of employment relation. \emph{leaderOf}
    and \emph{editorOf} are such examples. This will boost the idea of inducing heirarchical 
-   relations which will be discussed more in the last chapter.
+   relations which will be discussed more in the last chapter. A similar approach which tries to induce
+    hierarchical structures is \cite{Alfonseca2012} .
  
  
 \iffalse
@@ -563,32 +563,29 @@ works.
   about the model complexity to have no assumption about the exact number of entities and relations
   is suggested by the applicant to be beneficial 
    and is also supported in the literature.
-   %\citep{Yates2007}\citep{Mintz2009} 
+   \cite{Mintz2009} \cite{Yates2007}  
 
   \item[Relations may not be expressed explicitly in text.] \hfill \\
   Relation extraction task is definitely more than finding paraphrases. The model should be able to handle
-  long-distance relations among entities as well as hidden semantic indications of a relation.
+  long-distance relations among entities as well as hidden semantic indications of a relation. \cite{Poon2009}
   
-  %\citep{PoonDomingos2009} 
+
 
   \item[Relations and entities have their inner organization and types.] \hfill \\
   It is shown by several recent works that relations of relations play a substantial role in identifying
   relations. Relations and entities belong to a hierarchy of types and therefore the constraints they put on each other
-  should be learned as well.
-  %\citep{Yao2011}\citep{Alfonesca2012}\citep{NakasholeWeikum2012}
+  should be learned as well.\cite{Yao2011} \cite{Alfonseca2012} \cite{Nakashole2012a}
 
   \item[Using KB is necessary but not enough.] \hfill \\
   There are more relations among entities than what is collected in 
   Knowledge Bases e.g. Freebase. At the same time, it is statistically shown that a supervision
   from such resources strongly contributes to convergance of any model to a better 
-  objective configurations.
-  %\citep{Mintz2009}\citep{Bordes2011}\citep{Yao2011}
+  objective configurations.\cite{Yao2011} \cite{Mintz2009}
 
   \item[Relations and entities are sharing information within each other.] \hfill \\
   Relations and entities should be learned jointly since they share same explanatory factors (hidden variables)
   . Meaning of a entity can be learned from its relation to other entities and same argument holds among relations.
-  Basically, the model should be able to carry multi-task learning. 
-  %\citep{Yao2011}\citep{Bordes2011}
+  Basically, the model should be able to carry multi-task learning. \cite{Yao2011} 
     
 \end{description}
 
@@ -596,8 +593,17 @@ works.
 \section{Summary}
 \label{ch:conclusion}
 
+In this paper, we reviewd four influential works on \textbf{Unsupervised Relation Extraction}:
+\begin{enumerate}
+  \item DIRT
+  \item TextRunner
+  \item USP
+  \item Rel-LDA \& Type-LDA
+\end{enumerate}
 
-Provide an overview of what you have done and what need to be done.
+We described each model and analyzed the strength and weakness of them. We also showed some improvements over these
+ methods in literature. At the end, we highlighted main aspects of the task that each model tried to address a subset of them.
+ 
 
 %\subsection{Plan for completion of the research}
 
